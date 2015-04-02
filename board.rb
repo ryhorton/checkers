@@ -1,3 +1,5 @@
+require_relative 'piece'
+
 class Board
 
   attr_accessor :board
@@ -58,14 +60,19 @@ class Board
     dup
   end
 
+  def to_s
+    board.map do |row|
+      row.map do |maybe_piece|
+        maybe_piece.nil? ? "_" : maybe_piece.to_s
+      end.join
+    end.join("\n")
+  end
+
   def inspect
     board.map do |row|
       row.map do |piece|
-        piece.nil? ? ' ' : piece.type
-      end.join(' ')
-    end.join('\n')
+        piece.nil? ? "_" : piece.to_s
+      end.join(" ")
+    end.join("\n")
   end
-end
-
-class InvalidMoveError < StandardError
 end
