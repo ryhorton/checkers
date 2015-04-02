@@ -49,34 +49,23 @@ class Board
     pos.all? { |i| i.between?(0,9) }
   end
 
-  def move(from_pos, to_pos)  # to_pos will be an array of coord
-    raise 'there is no piece at that position' if self[from_pos].nil?
-
-    if
-
-    raise 'invalid move' if self[to_pos] # cannot move to an occupied space
-
-    if valid_pos?(to_pos) && self[to_pos].nil?  # to_pos is on the board and free
-      piece = self[from_pos]
-
-# is seq itself valid?
-# it makes the dup boards
-
-      #case to_pos is one set coord
-
-      #case mult coords
-      piece.perform_slide(to_pos) || piece.perform_jump(to_pos)
-
-      # iterate over to_pos
-
-      # keep trying jump
-      #dup board each time
-
-
+  def dup
+    dup = Board.new(true)
+    pieces.each do |piece|
+      dup[piece.position] = Piece.new(piece.color, piece.type, piece.position, dup)
     end
+
+    dup
   end
 
+  def inspect
+    board.map do |row|
+      row.map do |piece|
+        piece.nil? ? ' ' : piece.type
+      end.join(' ')
+    end.join('\n')
+  end
+end
 
-
-
+class InvalidMoveError < StandardError
 end

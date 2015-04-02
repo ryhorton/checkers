@@ -62,6 +62,51 @@ class Piece
     moves
   end
 
+  def perform_moves!(move_seq)
+    from_pos, to_pos = move_seq.shift, move_seq.shift
+
+    raise InvalidMoveError.new('invalid move') if board[from_pos].nil?
+    raise InvalidMoveError.new('invalid move') if board[to_pos] # cannot move to an occupied space
+    raise InvalidMoveError.new('invalid move') unless board.valid_pos?(to_pos)
+
+    if move_seq.count == 2
+      result = board[from_pos].perform_slide(to_pos)
+    end
+
+    if result == false?
+      board[from_pos].perform_jump(to_pos)
+
+      while move_seq.count > 0
+        # keep calling perform_jump
+        from_pos = to_pos
+        to_pos = move_seq.shift
+
+        raise InvalidMoveError.new('invalid move') if board[to_pos] # cannot move to an occupied space
+        raise InvalidMoveError.new('invalid move') unless board.valid_pos?(to_pos)
+
+        board[from_pos].perform_jump(to_pos)
+      end
+    end
+
+    true
+  end
+
+  def perform_moves(move_seq)
+    result = valid_move_seq?(move_seq)  # will return true/false
+    result ? perform_moves!(move_seq) : raise InvalidMoveError.new('invalid move')
+  end
+
+  def valid_move_seq?(move_seq)
+    begin
+      board.dup.perform_moves!(move_seq)
+    rescue InvalidMoveError => e
+      puts e.message
+      return false
+    else
+      return true
+    end
+  end
+
 
 
   def maybe_promote
