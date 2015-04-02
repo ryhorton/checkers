@@ -57,10 +57,12 @@ class Piece
       pos1 = [self.position[0] + x, self.position[1] + y]
       pos2 = [self.position[0] + (2 * x), self.position[1] + (2 * y)]
 
-      if board[pos1].nil?
+      if board.valid_pos?(pos1) && board[pos1].nil?
         moves << pos1
-      elsif (board[pos1].color != self.color) && board[pos2].nil?
-        moves << pos2
+      elsif board.valid_pos?(pos2)
+        if (board[pos1].color != self.color) && board[pos2].nil?
+          moves << pos2
+        end
       end
     end
 
